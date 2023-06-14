@@ -1,5 +1,5 @@
 ﻿<h3>(@Matrix.GetLength(0), @Matrix.GetLength(1))-Matrix</h3>
-<div class="board" style="--col-dimension:@Matrix.GetLength(1)">
+<div class="@(BracketStyle ? "matrixWithBrackets" : "matrixWithoutBrackets")" style="--col-dimension:@Matrix.GetLength(1)">
 	@{
 		for (int i = 0; i < Matrix.GetLength(0); i++)
 		{
@@ -38,8 +38,12 @@
 
 	[Parameter]
 	public int[,] Matrix { get; set; } = new int[3, 3];
+	//custom Input (editable matrix)
 	[Parameter]
 	public bool Edit { get; set; } = false;
+	//Display Border
+	[Parameter]
+	public bool BracketStyle { get; set; } = true;
 
 	private Field activeField = new Field(-1, -1);
 
