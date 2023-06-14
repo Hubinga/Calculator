@@ -7,13 +7,77 @@
 			{
 				string cssClassTag = "element";
 
-				<div class= "@cssClassTag">@Matrix[i,j]</div>
+				if (Edit)
+				{
+					int currentRowIdx = i;
+					int currentColIdx = j;
+					<div tabindex="-1" class= "@cssClassTag" @onkeydown="KeyboardEventHandler" @onclick="() => FieldClicked(currentRowIdx, currentColIdx)">@Matrix[i,j]</div>	
+				}
+				else
+				{
+					<div class= "@cssClassTag">@Matrix[i,j]</div>	
+				}
 			}
 		}
 	}
 </div>
 
 @code {
+
+	private struct Field
+	{
+		public int RowIdx;
+		public int ColIdx;
+
+		public Field(int rowIdx, int colIdx)
+		{
+			RowIdx = rowIdx;
+			ColIdx = colIdx;
+		}
+	}
+
 	[Parameter]
 	public int[,] Matrix { get; set; } = new int[3, 3];
+	[Parameter]
+	public bool Edit { get; set; } = false;
+
+	private Field activeField = new Field(-1, -1);
+
+	private void KeyboardEventHandler(KeyboardEventArgs args)
+	{
+		if (!Edit)
+		{
+			return;
+		}
+
+		if (activeField.RowIdx != -1 && activeField.ColIdx != -1)
+		{
+			string key = args.Key;
+
+			//clear field
+			if (key == "Backspace")
+			{
+				Matrix[activeField.RowIdx, activeField.ColIdx] = 0;
+				return;
+			}
+
+			int inputNumber;
+			if (int.TryParse(key, out inputNumber))
+			{
+				Matrix[activeField.RowIdx, activeField.ColIdx] = Convert.ToInt32(args.Key);
+			}
+		}
+	}
+
+	//set selected field
+	private void FieldClicked(int rowIdx, int colIdx)
+	{
+		if (!Edit)
+		{
+			return;
+		}
+		
+		activeField.RowIdx = rowIdx;
+		activeField.ColIdx = colIdx;	
+	}
 }
