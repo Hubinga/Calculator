@@ -1,13 +1,13 @@
-﻿.matrix-a{
-    border-left: 2px solid black;
-    border-bottom: 2px solid black;
-    margin-left: 150px;
-    width:fit-content;
-    margin-bottom:-2px;
-}
-
-.matrix-b {
+﻿.matrix-a {
     border-right: 2px solid black;
     border-top: 2px solid black;
     width: fit-content;
+}
+
+.matrix-b {
+    border-left: 2px solid black;
+    border-bottom: 2px solid black;
+    margin-left: 150px;
+    width: fit-content;
+    margin-bottom: -2px;
 }

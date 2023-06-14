@@ -1,11 +1,50 @@
-﻿<h3>MatrixMultiplicationComponent</h3>
-<div class="matrix-a">
-	<MatrixComponent BracketStyle="false"></MatrixComponent>
-</div>
+﻿@using Calculator.Classes;
+<h3>MatrixMultiplicationComponent</h3>
+
 <div class="matrix-b">
-	<MatrixComponent BracketStyle="false"></MatrixComponent>
+	<MatrixComponent Matrix="MatrixA" BracketStyle="false"></MatrixComponent>
 </div>
+<div>
+	<div class="matrix-a">
+		<MatrixComponent Matrix="MatrixB" BracketStyle="false"></MatrixComponent>
+	</div>
+	@{
+		if (solved)
+		{
+			<div>
+					<MatrixComponent Matrix="MatrixC" BracketStyle="false"></MatrixComponent>
+			</div>		
+		}
+	}
+</div>
+<button @onclick="Multiply">Multiply</button>
 
 @code {
+	[Parameter]
+	public int[,] MatrixA { get; set; } = new int[3, 3];
+	[Parameter]
+	public int[,] MatrixB { get; set; } = new int[3, 3];
 
+	private int[,] MatrixC = new int[3, 3];
+
+	private bool solved = false;
+
+	public void Multiply()
+	{
+		Matrix a = new Matrix(MatrixA);
+		Matrix b = new Matrix(MatrixB);
+		Matrix c = a * b;
+
+		MatrixC = c.MatrixBoard;
+		solved = true;
+
+		a.Print();
+		Console.WriteLine();
+
+		b.Print();
+		Console.WriteLine();
+
+		c.Print();
+		Console.WriteLine();
+	}
 }
