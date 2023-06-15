@@ -1,0 +1,18 @@
+﻿<button class="accordion" @onclick="HandleAccordionItemClicked">@Title</button>
+<div class="panel" style="--active:@(Collapsed?"none":"block")">
+	@ChildContent
+</div>
+
+@code {
+	[Parameter] 
+	public RenderFragment ChildContent { get; set; }
+	[Parameter]
+	public bool Collapsed { get; set; } = true;
+	[Parameter]
+	public string Title { get; set; } = "Title";
+
+	private void HandleAccordionItemClicked()
+	{
+		Collapsed = !Collapsed;
+	}
+}

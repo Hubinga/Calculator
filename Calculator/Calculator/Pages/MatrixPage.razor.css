@@ -1,0 +1,22 @@
+﻿.matrix-addidtion {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:start;
+    height:max-content;
+}
+
+.child p, button {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin: auto;
+    display: table-cell;
+    vertical-align: middle;
+    height:100%;
+}
+
+.child {
+    flex-grow: 0;
+    flex-shrink: 0;
+    display:table;
+}

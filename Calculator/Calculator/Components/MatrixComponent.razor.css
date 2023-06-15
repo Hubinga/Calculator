@@ -6,6 +6,8 @@
     border-left: 2px solid black;
     border-right: 2px solid black;
     border-radius: 20px;
+    padding: 5px;
+    margin: 10px;
 }
 
 .matrixWithoutBrackets {
@@ -13,6 +15,8 @@
     grid-template-columns: repeat(var(--col-dimension), auto);
     grid-template-rows: fit-content();
     width: fit-content;
+    padding: 5px;
+    margin: 10px;
 }
 
 
