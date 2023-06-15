@@ -28,7 +28,7 @@ namespace Calculator.Classes
 
 		public static Matrix operator+(Matrix a, Matrix b)
 		{
-			if(a.Dimension != b.Dimension)
+			if(a.RowSize != b.RowSize || a.ColumnSize != b.ColumnSize)
 			{
 				throw new WrongDimesnionException("Both matrices must have the same dimension!");
 			}

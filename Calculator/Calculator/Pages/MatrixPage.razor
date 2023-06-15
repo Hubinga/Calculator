@@ -1,26 +1,8 @@
 ﻿@page "/Matrix"
 @using Calculator.Components
 
-<h3>MatrixPage</h3>
 <AccordionComponent Title="Addition von Matrizen">
-	<button>Result</button>
-	<div class="matrix-addidtion">
-		<div class = "child">
-			<MatrixComponent Matrix="new int[2,3]" Edit="true"></MatrixComponent>
-		</div>
-		<div class = "child">
-			<p>+</p>
-		</div>
-		<div class = "child">
-			<MatrixComponent Matrix="new int[2,3]" Edit="true"></MatrixComponent>
-		</div>
-		<div class = "child">
-			<p>=</p>
-		</div>
-		<div class = "child">
-			<MatrixComponent Matrix="new int[2,3]" Edit="false"></MatrixComponent>
-		</div>
-	</div>
+	<MatrixAdditionComponent></MatrixAdditionComponent>
 </AccordionComponent>
 <AccordionComponent Title="Multiplikation einer Matrix mit einem Skalar">
 	<MatrixComponent Matrix="new int[4,3]" Edit="true"></MatrixComponent>

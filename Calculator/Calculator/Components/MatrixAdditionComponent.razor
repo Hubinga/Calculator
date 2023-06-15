@@ -1,0 +1,104 @@
+﻿@using Calculator.Classes;
+@using Calculator.Models;
+
+@{
+	if (!active)
+	{
+		<EditForm Model="@dimensionModel" OnValidSubmit="@Start">
+			<DataAnnotationsValidator />
+			<ValidationSummary />
+			<p>
+				<label>
+					Row Size:
+					<InputNumber id="row-size" @bind-Value="dimensionModel.RowSize" />
+				</label>
+			</p>
+			<p>
+				<label>
+					Collumn Size:
+					<InputNumber id="col-size" @bind-Value="dimensionModel.CollumnSize" />
+				</label>
+			</p>
+			<button type="submit">Submit</button>
+		</EditForm>
+	}
+	else
+	{
+		<button class="button-purple" @onclick="AddMatrix">Add Matrix</button>
+		<button class="button-purple" @onclick="Solve">Result</button>
+		<button class="button-purple" @onclick="Reset">Reset</button>
+		<div class="matrix-addidtion">
+			@{
+				for (int i = 0; i < matrices.Count; i++)
+				{
+					<div class="child">
+						<MatrixComponent Matrix="matrices[i]" Edit="true"></MatrixComponent>
+					</div>
+
+					string sign = i < (matrices.Count - 1) ? "+" : "=";
+
+					<div class="child">
+						<p>@sign</p>
+					</div>
+				}
+
+				if (solved)
+				{
+					<div class="child">
+						<MatrixComponent Matrix="result" Edit="false"></MatrixComponent>
+					</div>
+				}
+			}
+		</div>
+	}
+}
+
+@code {
+	private MatrixDimensionModel dimensionModel = new();
+	private List<int[,]> matrices = new List<int[,]>();
+	private int[,] result = new int[3, 3];
+	private bool solved = false;
+	private bool active = false;
+
+	private void Start()
+	{
+		active = true;
+		//add 2 empty matrices
+		AddMatrix();
+		AddMatrix();
+	}
+
+	private void AddMatrix()
+	{
+		matrices.Add(new int[dimensionModel.RowSize, dimensionModel.CollumnSize]);
+	}
+
+	private void Reset()
+	{
+		matrices.Clear();
+		active = false;
+		solved = false;
+	}
+
+	private void Solve()
+	{
+		try
+		{
+			//start with first matrix
+			Matrix m = new Matrix(matrices[0]);
+
+			//add all other matrices
+			for (int i = 1; i < matrices.Count; i++)
+			{
+				m += new Matrix(matrices[i]);
+			}
+
+			solved = true;
+			result = m.MatrixBoard;
+		}
+		catch(WrongDimesnionException e)
+		{
+			Console.WriteLine(e.Message);
+		}
+	}
+}
