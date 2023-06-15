@@ -1,4 +1,27 @@
-﻿<!--<h3>(@Matrix.GetLength(0), @Matrix.GetLength(1))-Matrix</h3>-->
+﻿@using Calculator.Models;
+<!--<h3>(@Matrix.GetLength(0), @Matrix.GetLength(1))-Matrix</h3>-->
+@{
+	if (EditDimension)
+	{
+		<EditForm Model="@dimensionModel" OnValidSubmit="@OnDimensionChange">
+			<DataAnnotationsValidator />
+			<ValidationSummary />
+			<p>
+				<label>
+					Row Size:
+					<InputNumber id="row-size" @bind-Value="dimensionModel.RowSize" />
+				</label>
+			</p>
+			<p>
+				<label>
+					Collumn Size:
+					<InputNumber id="col-size" @bind-Value="dimensionModel.CollumnSize" />
+				</label>
+			</p>
+			<button type="submit">Submit</button>
+		</EditForm>
+	}
+}
 <div class="@(BracketStyle ? "matrixWithBrackets" : "matrixWithoutBrackets")" style="--col-dimension:@Matrix.GetLength(1)">
 	@{
 		for (int i = 0; i < Matrix.GetLength(0); i++)
@@ -44,8 +67,12 @@
 	//Display Border
 	[Parameter]
 	public bool BracketStyle { get; set; } = true;
+	//Dimension can be edit
+	[Parameter]
+	public bool EditDimension { get; set; } = false;
 
 	private Field activeField = new Field(-1, -1);
+	private MatrixDimensionModel dimensionModel = new();
 
 	private void KeyboardEventHandler(KeyboardEventArgs args)
 	{
@@ -80,8 +107,15 @@
 		{
 			return;
 		}
-		
+
 		activeField.RowIdx = rowIdx;
 		activeField.ColIdx = colIdx;	
+	}
+
+	private void OnDimensionChange()
+	{
+		if (!EditDimension) return;
+
+		Matrix = new int[dimensionModel.RowSize, dimensionModel.CollumnSize];
 	}
 }
