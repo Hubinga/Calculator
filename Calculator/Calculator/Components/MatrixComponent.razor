@@ -1,4 +1,5 @@
-﻿@using Calculator.Models;
+﻿@using Calculator.Classes;
+@using Calculator.Models;
 <!--<h3>(@Matrix.GetLength(0), @Matrix.GetLength(1))-Matrix</h3>-->
 @{
 	if (EditDimension)
@@ -6,27 +7,20 @@
 		<EditForm Model="@dimensionModel" OnValidSubmit="@OnDimensionChange">
 			<DataAnnotationsValidator />
 			<ValidationSummary />
-			<p>
-				<label>
-					Row Size:
-					<InputNumber id="row-size" @bind-Value="dimensionModel.RowSize" />
-				</label>
-			</p>
-			<p>
-				<label>
-					Collumn Size:
-					<InputNumber id="col-size" @bind-Value="dimensionModel.CollumnSize" />
-				</label>
-			</p>
-			<button type="submit">Submit</button>
+			<div class="matrix-dimension">
+				<div class="child">
+					<button type="submit">Change Dimension</button>
+					<InputText id="dimension-input" @bind-Value="dimensionModel.Dimension" />
+				</div>	
+			</div>
 		</EditForm>
 	}
 }
-<div class="@(BracketStyle ? "matrixWithBrackets" : "matrixWithoutBrackets")" style="--col-dimension:@Matrix.GetLength(1)">
+<div class="@(BracketStyle ? "matrixWithBrackets" : "matrixWithoutBrackets")" style="--col-dimension:@Matrix.MatrixBoard.GetLength(1)">
 	@{
-		for (int i = 0; i < Matrix.GetLength(0); i++)
+		for (int i = 0; i < Matrix.MatrixBoard.GetLength(0); i++)
 		{
-			for (int j = 0; j < Matrix.GetLength(1); j++)
+			for (int j = 0; j < Matrix.MatrixBoard.GetLength(1); j++)
 			{
 				string cssClassTag = "element";
 
@@ -34,11 +28,11 @@
 				{
 					int currentRowIdx = i;
 					int currentColIdx = j;
-					<div tabindex="-1" class= "@cssClassTag" @onkeydown="KeyboardEventHandler" @onclick="() => FieldClicked(currentRowIdx, currentColIdx)">@Matrix[i,j]</div>	
+					<div tabindex="-1" class= "@cssClassTag" @onkeydown="KeyboardEventHandler" @onclick="() => FieldClicked(currentRowIdx, currentColIdx)">@Matrix.MatrixBoard[i,j]</div>	
 				}
 				else
 				{
-					<div class= "@cssClassTag">@Matrix[i,j]</div>	
+					<div class= "@cssClassTag">@Matrix.MatrixBoard[i,j]</div>	
 				}
 			}
 		}
@@ -60,7 +54,7 @@
 	}
 
 	[Parameter]
-	public int[,] Matrix { get; set; } = new int[3, 3];
+	public Matrix Matrix { get; set; } = new Matrix(3, 3);
 	//custom Input (editable matrix)
 	[Parameter]
 	public bool Edit { get; set; } = false;
@@ -88,14 +82,14 @@
 			//clear field
 			if (key == "Backspace")
 			{
-				Matrix[activeField.RowIdx, activeField.ColIdx] = 0;
+				Matrix.MatrixBoard[activeField.RowIdx, activeField.ColIdx] = 0;
 				return;
 			}
 
 			int inputNumber;
 			if (int.TryParse(key, out inputNumber))
 			{
-				Matrix[activeField.RowIdx, activeField.ColIdx] = Convert.ToInt32(args.Key);
+				Matrix.MatrixBoard[activeField.RowIdx, activeField.ColIdx] = Convert.ToInt32(args.Key);
 			}
 		}
 	}
@@ -116,6 +110,6 @@
 	{
 		if (!EditDimension) return;
 
-		Matrix = new int[dimensionModel.RowSize, dimensionModel.CollumnSize];
+		Matrix.ChangeDimension(dimensionModel.RowSize, dimensionModel.CollumnSize);
 	}
 }

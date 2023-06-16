@@ -7,19 +7,17 @@
 		<EditForm Model="@dimensionModel" OnValidSubmit="@Start">
 			<DataAnnotationsValidator />
 			<ValidationSummary />
-			<p>
-				<label>
-					Row Size:
-					<InputNumber id="row-size" @bind-Value="dimensionModel.RowSize" />
-				</label>
-			</p>
-			<p>
-				<label>
-					Collumn Size:
-					<InputNumber id="col-size" @bind-Value="dimensionModel.CollumnSize" />
-				</label>
-			</p>
-			<button type="submit">Submit</button>
+			<div class="matrix-addidtion">
+				<div class="child">
+					<p>
+						<label>
+							Dimension:
+							<InputText @bind-Value="dimensionModel.Dimension" />
+						</label>
+					</p>
+				</div>
+				<button class="button-purple" type="submit">Start</button>
+			</div>
 		</EditForm>
 	}
 	else
@@ -55,8 +53,8 @@
 
 @code {
 	private MatrixDimensionModel dimensionModel = new();
-	private List<int[,]> matrices = new List<int[,]>();
-	private int[,] result = new int[3, 3];
+	private List<Matrix> matrices = new List<Matrix>();
+	private Matrix result = new Matrix(3, 3);
 	private bool solved = false;
 	private bool active = false;
 
@@ -70,7 +68,7 @@
 
 	private void AddMatrix()
 	{
-		matrices.Add(new int[dimensionModel.RowSize, dimensionModel.CollumnSize]);
+		matrices.Add(new Matrix(dimensionModel.RowSize, dimensionModel.CollumnSize));
 	}
 
 	private void Reset()
@@ -85,16 +83,16 @@
 		try
 		{
 			//start with first matrix
-			Matrix m = new Matrix(matrices[0]);
+			Matrix m = new Matrix(matrices[0].MatrixBoard);
 
 			//add all other matrices
 			for (int i = 1; i < matrices.Count; i++)
 			{
-				m += new Matrix(matrices[i]);
+				m += matrices[i];
 			}
 
 			solved = true;
-			result = m.MatrixBoard;
+			result = m;
 		}
 		catch(WrongDimesnionException e)
 		{

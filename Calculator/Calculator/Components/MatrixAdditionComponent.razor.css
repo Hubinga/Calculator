@@ -17,6 +17,7 @@
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
+    margin: 5px;
 }
 
 .button-purple:disabled {
@@ -37,7 +38,7 @@
     height: max-content;
 }
 
-.child p, button {
+.child p {
     font-size: 20px;
     font-weight: bold;
     text-align: center;
@@ -52,4 +53,3 @@
     flex-shrink: 0;
     display: table;
 }
-

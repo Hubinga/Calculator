@@ -77,6 +77,20 @@ namespace Calculator.Classes
 			return new Matrix(result);
 		}
 
+		public void ChangeDimension(int rowSize, int collumnSize)
+		{
+			MatrixBoard = new int[rowSize, collumnSize];
+			RowSize = rowSize;
+			ColumnSize = collumnSize;
+		}
+
+		public void Reset(int rowSize = 3, int collumnSize = 3)
+		{
+			MatrixBoard = new int[rowSize, collumnSize];
+			RowSize = rowSize; 
+			ColumnSize = collumnSize;
+		}
+
 		public void Print()
 		{
 			for (int i = 0; i < RowSize; i++)
