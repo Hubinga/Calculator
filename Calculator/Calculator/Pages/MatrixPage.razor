@@ -1,4 +1,5 @@
 ﻿@page "/Matrix"
+@using Calculator.Classes;
 @using Calculator.Components
 
 <AccordionComponent Title="Addition von Matrizen">
@@ -8,6 +9,9 @@
 </AccordionComponent>
 <AccordionComponent Title="Multiplikation von Matrizen">
 	<MatrixMultiplicationComponent></MatrixMultiplicationComponent>
+</AccordionComponent>
+<AccordionComponent Title="Gauß-Jordan Algorithmus (Ax = b)">
+	<EquationWithMatrixComponent></EquationWithMatrixComponent>
 </AccordionComponent>
 
 @code {

@@ -25,6 +25,7 @@
 		<button class="button-purple" @onclick="AddMatrix">Add Matrix</button>
 		<button class="button-purple" @onclick="Solve">Result</button>
 		<button class="button-purple" @onclick="Reset">Reset</button>
+		<button class="button-purple" @onclick="GenerateRandomInput">Random Input</button>
 		<div class="matrix-addidtion">
 			@{
 				for (int i = 0; i < matrices.Count; i++)
@@ -97,6 +98,14 @@
 		catch(WrongDimesnionException e)
 		{
 			Console.WriteLine(e.Message);
+		}
+	}
+
+	private void GenerateRandomInput()
+	{
+		foreach (Matrix matrix in matrices)
+		{
+			matrix.FillMatrixWithRandomNumbers();
 		}
 	}
 }

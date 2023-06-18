@@ -20,7 +20,8 @@
 }
 
 .element {
-    width: 50px;
+    min-width: 50px;
+    max-width: 100px;
     height: 30px;
     display: flex;
     justify-content: center;

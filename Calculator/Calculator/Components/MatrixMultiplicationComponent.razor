@@ -1,4 +1,7 @@
 ﻿@using Calculator.Classes;
+<button class="button-purple" @onclick="Multiply">Result</button>
+<button class="button-purple" @onclick="Reset">Reset</button>
+<button class="button-purple" @onclick="GenerateRandomInput">Random Input</button>
 <div class="matrix-multiplication">
 	<div class="child">
 		<MatrixComponent Matrix="matrixA" Edit="true" EditDimension="true"></MatrixComponent>
@@ -10,7 +13,7 @@
 		<MatrixComponent Matrix="matrixB" Edit="true" EditDimension="true"></MatrixComponent>
 	</div>
 	<div class="child">
-		<p>+</p>
+		<p>=</p>
 	</div>
 	@{
 		if (solved)
@@ -22,8 +25,6 @@
 		}
 	}
 </div>
-<button class="button-purple" @onclick="Multiply">Multiply</button>
-<button class="button-purple" @onclick="Reset">Reset</button>
 
 @code {
 	private Matrix matrixA = new Matrix(3, 3);
@@ -50,5 +51,11 @@
 		solved = false;
 		matrixA.Reset();
 		matrixB.Reset();
+	}
+
+	private void GenerateRandomInput()
+	{
+		matrixA.FillMatrixWithRandomNumbers();
+		matrixB.FillMatrixWithRandomNumbers();
 	}
 }
