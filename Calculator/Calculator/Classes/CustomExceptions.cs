@@ -7,4 +7,10 @@
 		}
 	}
 
+	public class GausJordanException : Exception
+	{
+		public GausJordanException(string? message) : base(message)
+		{
+		}
+	}
 }

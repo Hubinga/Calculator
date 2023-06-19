@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics;
 
 namespace Calculator.Classes
 {
@@ -100,6 +102,27 @@ namespace Calculator.Classes
 				for (int j = 0; j < ColumnSize; j++)
 				{
 					MatrixBoard[i, j] = random.Next(from, to);
+				}
+			}
+		}
+
+		public void ChangeTwoRows(int firstRowIdx, int secondRowIdx)
+		{
+			for (int i = 0; i < ColumnSize; i++)
+			{
+				double temp = MatrixBoard[firstRowIdx, i];
+				MatrixBoard[firstRowIdx, i] = MatrixBoard[secondRowIdx, i];
+				MatrixBoard[secondRowIdx, i] = temp;
+			}
+		}
+
+		public void RoundBoardValues(int digits = 3)
+		{
+			for (int i = 0; i < RowSize; i++)
+			{
+				for (int j = 0; j < ColumnSize; j++)
+				{
+					MatrixBoard[i, j] = Math.Round(MatrixBoard[i, j], digits);
 				}
 			}
 		}

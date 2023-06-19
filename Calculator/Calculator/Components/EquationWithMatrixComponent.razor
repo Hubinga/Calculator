@@ -101,12 +101,19 @@ else
 
 	private void Solve()
 	{
-		//start with copy of input matrices
-		Array.Copy(matrixA.MatrixBoard, matrixAResult.MatrixBoard, matrixA.MatrixBoard.Length);
-		Array.Copy(vectorB.MatrixBoard, vectorBResult.MatrixBoard, vectorB.MatrixBoard.Length);
+		try
+		{
+			//start with copy of input matrices
+			Array.Copy(matrixA.MatrixBoard, matrixAResult.MatrixBoard, matrixA.MatrixBoard.Length);
+			Array.Copy(vectorB.MatrixBoard, vectorBResult.MatrixBoard, vectorB.MatrixBoard.Length);
 
-		matrixHelper.GaußJordan(matrixAResult, vectorBResult);
-		solved = true;
+			matrixHelper.GaußJordan(matrixAResult, vectorBResult);
+			solved = true;
+		}
+		catch (GausJordanException e)
+		{
+			Console.WriteLine(e.Message);
+		}
 	}
 
 	private void GenerateRandomInput()
