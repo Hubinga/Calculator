@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 
@@ -8,6 +9,7 @@ namespace Calculator.Classes
 	{
 		public int ColumnSize { get; private set; }
 		public int RowSize { get; private set; }
+		public bool IsVector { get; private set; }
 		public Tuple<int, int> Dimension => new Tuple<int, int>(RowSize, ColumnSize);
 
 		public double[,] MatrixBoard { get; private set; }
@@ -18,6 +20,8 @@ namespace Calculator.Classes
 			RowSize = matrixNumbers.GetLength(0);
 			ColumnSize = matrixNumbers.GetLength(1);
 			MatrixBoard = matrixNumbers;
+
+			IsVector = matrixNumbers.GetLength(1) == 1 ? true : false;
 		}
 
 		//empty matrix
@@ -26,6 +30,8 @@ namespace Calculator.Classes
 			RowSize = rowSize;
 			ColumnSize = columnSize;
 			MatrixBoard = new double[RowSize, ColumnSize];
+
+			IsVector = columnSize == 1 ? true : false;
 		}
 
 		public static Matrix operator+(Matrix a, Matrix b)
@@ -77,6 +83,23 @@ namespace Calculator.Classes
 			}
 
 			return new Matrix(result);
+		}
+
+		public void MakeUnitMatrix()
+		{
+			if(RowSize != ColumnSize)
+			{
+                Console.WriteLine("Unit matrix has to be a (n,n)");
+				return;
+            }
+
+			Reset(RowSize, ColumnSize);
+
+			//make diag(1,1,1,...)
+			for (int i = 0; i < RowSize; i++)
+			{
+				MatrixBoard[i, i] = 1;
+			}
 		}
 
 		public void ChangeDimension(int rowSize, int collumnSize)

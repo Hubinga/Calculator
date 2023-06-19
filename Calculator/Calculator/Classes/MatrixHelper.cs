@@ -6,7 +6,7 @@
 		/// Solve system of equations (Ax = b)
 		/// </summary>
 		/// <param name="matrix">matrix A</param>
-		/// <param name="vektor">vector b</param>
+		/// <param name="vektor">vector b or matrix I to claculate inverse Matrix A</param>
 		public void GaußJordan(Matrix matrix, Matrix vector)
 		{
 			//start from first row (eliminate x1)
@@ -54,10 +54,19 @@
 						for (int j = 0; j < matrix.ColumnSize; j++)
 						{
 							matrix.MatrixBoard[i, j] += matrix.MatrixBoard[rowIdx, j] * factor;
+
+							//update vector b if it is the inverse
+							if (!vector.IsVector)
+							{
+								vector.MatrixBoard[i, j] += vector.MatrixBoard[rowIdx, j] * factor;
+							}
 						}
 
 						//update vector b
-						vector.MatrixBoard[i, 0] += vector.MatrixBoard[rowIdx, 0] * factor;
+						if (vector.IsVector)
+						{
+							vector.MatrixBoard[i, 0] += vector.MatrixBoard[rowIdx, 0] * factor;
+						}			
 					}
 				}
 
@@ -74,7 +83,11 @@
 				double quotient = matrix.MatrixBoard[i, i];
 
 				matrix.MatrixBoard[i, i] /= quotient;
-				vector.MatrixBoard[i, 0] /= quotient;
+
+				for (int j = 0; j < vector.ColumnSize; j++)
+				{
+					vector.MatrixBoard[i, j] /= quotient;
+				}
 			}
 
 			//round board values (avoid too many digits and very small values e.g. 5,1E-17)

@@ -86,6 +86,13 @@
 				return;
 			}
 
+			//change from positive to negative number
+			if(key == "-")
+			{
+				Matrix.MatrixBoard[activeField.RowIdx, activeField.ColIdx] *= -1;
+				return;
+			}
+
 			int inputNumber;
 			if (int.TryParse(key, out inputNumber))
 			{

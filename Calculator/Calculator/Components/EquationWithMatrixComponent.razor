@@ -1,4 +1,5 @@
 ﻿@using Calculator.Classes;
+@using Calculator.Classes.Enums;
 @using Calculator.Models;
 
 @if (!active)
@@ -40,7 +41,7 @@ else
 				<p>=</p>
 			</div>
 			<div class="child">
-				<MatrixComponent Matrix="vectorB" Edit="true"></MatrixComponent>
+				<MatrixComponent Matrix="vectorB" Edit="@(calculationType == CalculationTypes.EquationSystem)"></MatrixComponent>
 			</div>
 		}
 	</div>
@@ -74,29 +75,41 @@ else
 	private bool active = false;
 
 	private Matrix matrixA = new Matrix(3, 3);
-	//inhomogene vector b
+	//inhomogene vector b or I for inverse
 	private Matrix vectorB = new Matrix(3, 1);
 
 	private Matrix matrixAResult = new Matrix(3, 3);
 	private Matrix vectorBResult = new Matrix(3, 1);
 	private MatrixHelper matrixHelper = new();
 
+	[Parameter]
+	public CalculationTypes calculationType { get; set; } = CalculationTypes.EquationSystem;
 
 	private void Start()
 	{
 		active = true;
 		//start with empty matrix (n,n)-Matrix
 		matrixA = new Matrix(dimensionModel.RowSize, dimensionModel.RowSize);
-		//vector b has to be (n,1)-Matrix
-		vectorB = new Matrix(dimensionModel.RowSize, 1);
+		matrixAResult = new Matrix(dimensionModel.RowSize, dimensionModel.RowSize);
+		//vector b has to be (n,1)-Matrix if it is Ax = b or (n,n)-Matrix if it is A|I -> I|A-1
+		int rows = calculationType == CalculationTypes.EquationSystem ? 1 : dimensionModel.RowSize;
+
+		vectorB = new Matrix(dimensionModel.RowSize, rows);
+		vectorBResult = new Matrix(dimensionModel.RowSize, rows);
+
+		//make unit matrix
+		if(calculationType == CalculationTypes.Inverse)
+		{
+			vectorB.MakeUnitMatrix();
+			vectorBResult.MakeUnitMatrix();
+		}
+
 	}
 
 	private void Reset()
 	{
 		active = false;
 		solved = false;
-		matrixAResult = new Matrix(3, 3);
-		vectorBResult = new Matrix(3, 1);
 	}
 
 	private void Solve()
@@ -119,6 +132,9 @@ else
 	private void GenerateRandomInput()
 	{
 		matrixA.FillMatrixWithRandomNumbers();
-		vectorB.FillMatrixWithRandomNumbers();
+		if(calculationType == CalculationTypes.EquationSystem)
+		{
+			vectorB.FillMatrixWithRandomNumbers();
+		}
 	}
 }
