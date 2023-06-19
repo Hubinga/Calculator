@@ -26,8 +26,8 @@
 						throw new GausJordanException("No row found to change with!");
 					}
 
-					matrix.ChangeTwoRows(rowIdx, rowIdxToChangeWith);
-					vector.ChangeTwoRows(rowIdx, rowIdxToChangeWith);
+					matrix.SwapTwoRows(rowIdx, rowIdxToChangeWith);
+					vector.SwapTwoRows(rowIdx, rowIdxToChangeWith);
 					continue;
 				}
 
@@ -103,7 +103,12 @@
 
 			return -1;
 		}
-
+		/// <summary>
+		/// Compute determinante using Gauß-Jordan Algorithumus
+		/// </summary>
+		/// <param name="matrix">(n,n)-Matrix</param>
+		/// <returns></returns>
+		/// <exception cref="GausJordanException"></exception>
 		public double CalculateDeterminante(Matrix matrix)
 		{
 			//start from first row (eliminate x1)
@@ -112,7 +117,7 @@
 
 			while (rowIdx < matrix.RowSize)
 			{
-				//determinante can be read from matrix if its is a triangular matrix
+				//determinante can be computed if its is a triangular matrix
 				if (IsTriangularMatrix(matrix))
 				{
 					break;
@@ -130,8 +135,9 @@
 						throw new GausJordanException("No row found to change with!");
 					}
 
-					matrix.ChangeTwoRows(rowIdx, rowIdxToChangeWith);
-					//determinante *= -1;
+					matrix.SwapTwoRows(rowIdx, rowIdxToChangeWith);
+					//Swapping 2 lines changes the sign
+					determinante *= -1;
 					continue;
 				}
 
@@ -156,14 +162,12 @@
 						{
 							matrix.MatrixBoard[i, j] += matrix.MatrixBoard[rowIdx, j] * factor;
 						}
-
-						//determinante *= factor;
 					}
 				}
 				rowIdx++;
 			}
 
-			//make I (diag(1,1,1,...))
+			//determinante is product of diagonal elements (triangular matrix)
 			for (int i = 0; i < matrix.RowSize; i++)
 			{
 				determinante *= matrix.MatrixBoard[i, i];
@@ -171,15 +175,14 @@
 
 			matrix.RoundBoardValues();
 
-            Console.WriteLine(determinante);
-            return determinante;
+            return Math.Round(determinante, 2);
 		}
 
 		private bool IsTriangularMatrix(Matrix matrix)
 		{
 			for (int i = 0; i < matrix.RowSize; i++)
 			{
-				for (int j = i; j > 0; j--)
+				for (int j = 0; j < i; j++)
 				{
 					if (matrix.MatrixBoard[i,j] != 0)
 					{

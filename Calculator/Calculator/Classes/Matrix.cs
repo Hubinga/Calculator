@@ -129,7 +129,7 @@ namespace Calculator.Classes
 			}
 		}
 
-		public void ChangeTwoRows(int firstRowIdx, int secondRowIdx)
+		public void SwapTwoRows(int firstRowIdx, int secondRowIdx)
 		{
 			for (int i = 0; i < ColumnSize; i++)
 			{

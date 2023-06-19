@@ -16,7 +16,7 @@
     }
 
 .panel {
-    padding: 0 18px;
+    padding: 20px 18px;
     display: var(--active);
     background-color: white;
     overflow: hidden;

@@ -1,4 +1,4 @@
-﻿@page "/Matrix"
+﻿@page "/"
 @using Calculator.Classes;
 @using Calculator.Components
 
@@ -13,6 +13,9 @@
 </AccordionComponent>
 <AccordionComponent Title="Inverse Matrix">
 	<EquationWithMatrixComponent calculationType="Classes.Enums.CalculationTypes.Inverse"></EquationWithMatrixComponent>
+</AccordionComponent>
+<AccordionComponent Title="Determinante berechnen">
+	<DeterminanteComponent></DeterminanteComponent>
 </AccordionComponent>
 
 @code {
