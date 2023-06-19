@@ -54,6 +54,23 @@ namespace Calculator.Classes
 			return new Matrix(result);
 		}
 
+		public static Matrix operator -(Matrix a, Matrix b)
+		{
+			if(!a.IsVector || b.IsVector)
+			{
+				throw new VectorException("Both matrices have to be vectors!");
+			}
+
+			double[,] result = new double[a.RowSize, 0];
+
+			for (int i = 0; i < a.RowSize; i++)
+			{
+				result[i, 0] = a.MatrixBoard[i, 0] - b.MatrixBoard[i, 0];		
+			}
+
+			return new Matrix(result);
+		}
+
 		public static Matrix operator *(Matrix a, Matrix b)
 		{
 			//e.g. (2,3) (3, 2)

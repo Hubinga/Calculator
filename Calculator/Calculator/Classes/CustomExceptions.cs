@@ -13,4 +13,11 @@
 		{
 		}
 	}
+
+	public class VectorException : Exception
+	{
+		public VectorException(string? message) : base(message)
+		{
+		}
+	}
 }
