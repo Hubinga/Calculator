@@ -19,15 +19,7 @@
 
 				if(currentX == 0)
 				{
-					int rowIdxToChangeWith = GetRowIdx(matrix, rowIdx, rowIdx);
-
-					if(rowIdxToChangeWith == -1)
-					{
-						throw new GausJordanException("No row found to change with!");
-					}
-
-					matrix.SwapTwoRows(rowIdx, rowIdxToChangeWith);
-					vector.SwapTwoRows(rowIdx, rowIdxToChangeWith);
+					SwapRows(matrix, vector, rowIdx);
 					continue;
 				}
 
@@ -87,6 +79,19 @@
 			matrix.RoundBoardValues();
         }
 
+		private void SwapRows(Matrix matrix, Matrix? vector, int rowIdx)
+		{
+			int rowIdxToChangeWith = GetRowIdx(matrix, rowIdx, rowIdx);
+
+			if (rowIdxToChangeWith == -1)
+			{
+				throw new GausJordanException("No row found to change with!");
+			}
+
+			matrix.SwapTwoRows(rowIdx, rowIdxToChangeWith);
+			vector?.SwapTwoRows(rowIdx, rowIdxToChangeWith);
+		}
+
 		private int GetRowIdx(Matrix m, int currentRowIdx, int columnIdx)
 		{
 			for (int i = 0; i < m.RowSize; i++)
@@ -128,14 +133,7 @@
 
 				if (currentX == 0)
 				{
-					int rowIdxToChangeWith = GetRowIdx(matrix, rowIdx, rowIdx);
-
-					if (rowIdxToChangeWith == -1)
-					{
-						throw new GausJordanException("No row found to change with!");
-					}
-
-					matrix.SwapTwoRows(rowIdx, rowIdxToChangeWith);
+					SwapRows(matrix, null, rowIdx);
 					//Swapping 2 lines changes the sign
 					determinante *= -1;
 					continue;
@@ -192,6 +190,113 @@
 			}
 
 			return true;
+		}
+
+		/// <summary>
+		/// Linear Dependence Test using Gauß-Jordan Algorithumus
+		/// </summary>
+		/// <param name="matrix"></param>
+		/// <returns></returns>
+		public bool LinearDependence(Matrix matrix)
+		{
+			//start from first row (eliminate x1)
+			int rowIdx = 0;
+
+			while (rowIdx < matrix.RowSize)
+			{
+				//if all elements of one row or collumn are 0: stop (linear dependence)
+				if (ContainsNullRowOrColumn(matrix))
+				{
+					break;
+				}
+
+				//get x1, x2, ..., x(rowIdx) from current row
+				double currentX = matrix.MatrixBoard[rowIdx, rowIdx];
+
+				if (currentX == 0)
+				{
+					SwapRows(matrix, null, rowIdx);
+					continue;
+				}
+
+				for (int i = 0; i < matrix.RowSize; i++)
+				{
+					if (i == rowIdx)
+					{
+						continue;
+					}
+
+					//get x1, x2, ... , x(rowIdx) from other rows
+					double xToEliminate = matrix.MatrixBoard[i, rowIdx];
+
+					//eliminate only if not already 0
+					if (xToEliminate != 0)
+					{
+						//xToEliminate + (currentX * x) = 0;
+						//e.g. 4 + (1 * x) = 0 -> 4 + x = 0 -> -4/1 = x -> x = -4 -> -(xToEliminate/currentX)
+						double factor = -(xToEliminate / currentX);
+
+						for (int j = 0; j < matrix.ColumnSize; j++)
+						{
+							matrix.MatrixBoard[i, j] += matrix.MatrixBoard[rowIdx, j] * factor;
+						}
+					}
+				}
+				rowIdx++;
+			}
+
+			matrix.RoundBoardValues();
+			return ContainsNullRowOrColumn(matrix);
+		}
+
+		private bool ContainsNullRowOrColumn(Matrix matrix)
+		{
+			//rows
+			for (int i = 0; i < matrix.RowSize; i++)
+			{
+				var row = Enumerable.Range(0, matrix.ColumnSize).Select(e => matrix.MatrixBoard[i, e]).ToList();
+
+				if(row.All(e=>e == 0))
+				{
+					return true;
+				}
+			}
+
+			//columns
+			for (int i = 0; i < matrix.ColumnSize; i++)
+			{
+				var column = Enumerable.Range(0, matrix.RowSize).Select(e => matrix.MatrixBoard[e, i]).ToList();
+
+				if (column.All(e => e == 0))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public Matrix BuildMatrixFromVectors(List<Matrix> vectors)
+		{
+			foreach (var vector in vectors) 
+			{
+				if (!vector.IsVector)
+				{
+					throw new VectorException("Vector can only have one column!");
+				}
+			}
+
+			Matrix matrix = new Matrix(vectors[0].RowSize, vectors.Count);
+
+			for (int i = 0; i < matrix.RowSize; i++)
+			{
+				for (int j = 0; j < matrix.ColumnSize; j++)
+				{
+					matrix.MatrixBoard[i, j] = vectors[j].MatrixBoard[i, 0];
+				}
+			}
+
+			return matrix;
 		}
 	}
 }

@@ -56,12 +56,12 @@ namespace Calculator.Classes
 
 		public static Matrix operator -(Matrix a, Matrix b)
 		{
-			if(!a.IsVector || b.IsVector)
+			if(!a.IsVector || !b.IsVector)
 			{
 				throw new VectorException("Both matrices have to be vectors!");
 			}
 
-			double[,] result = new double[a.RowSize, 0];
+			double[,] result = new double[a.RowSize, 1];
 
 			for (int i = 0; i < a.RowSize; i++)
 			{

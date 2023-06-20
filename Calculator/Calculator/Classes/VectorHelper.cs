@@ -25,12 +25,7 @@
 		/// <param name="pointA"></param>
 		/// <param name="pointB"></param>
 		/// <returns></returns>
-		public double DistanceBetweenTwoPoints(Matrix pointA, Matrix pointB) 
-		{
-			Matrix vector = pointB - pointA;
-
-			return Math.Sqrt(CalculateLength(vector));
-		}
+		public double DistanceBetweenTwoPoints(Matrix pointA, Matrix pointB) => CalculateLength(pointB - pointA);
 
 		public double CalculateDotProduct(Matrix vectorA, Matrix vectorB)
 		{

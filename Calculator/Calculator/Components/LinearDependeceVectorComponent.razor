@@ -1,0 +1,113 @@
+﻿@using Calculator.Classes;
+@using Calculator.Models;
+
+@{
+	if (!active)
+	{
+		<EditForm Model="@dimensionModel" OnValidSubmit="@Start">
+			<DataAnnotationsValidator />
+			<ValidationSummary />
+			<div class="linear-dependence">
+				<div class="child">
+					<p>
+						<label>
+							Rows:
+							<InputNumber @bind-Value="dimensionModel.RowSize" />
+						</label>
+					</p>
+				</div>
+				<button class="button-purple" type="submit">Start</button>
+			</div>
+		</EditForm>
+	}
+	else
+	{
+		<button class="button-purple" @onclick="Solve">Result</button>
+		<button class="button-purple" @onclick="Reset">Reset</button>
+		<button class="button-purple" @onclick="GenerateRandomInput">Random Input</button>
+		<div class="linear-dependence">
+			@{
+				foreach(Matrix vector in vectors)
+				{
+					<div class="child">
+						<MatrixComponent Matrix="vector" Edit="true"></MatrixComponent>
+					</div>
+				}
+			}
+		</div>
+		@if (solved)
+		{
+			<br />
+			<h3>Ergebnis (Original Matrix, Matrix nach Gauß-Jordan):</h3>
+			<div class="linear-dependence">
+
+				<div class="child">
+					<MatrixComponent Matrix="matrixFromVectorsOriginal" Edit="true"></MatrixComponent>
+				</div>
+				<div class="child">
+					<MatrixComponent Matrix="matrixFromVectorsResult" Edit="true"></MatrixComponent>
+				</div>
+				<div class="child">
+					<p>
+						Die Vectoren sind @(linearDependent ? "linear abhängig" : "linear unabhänging")!
+					</p>
+				</div>
+			</div>
+		}
+	}
+}
+
+@code {
+	private MatrixDimensionModel dimensionModel = new();
+
+	private bool solved = false;
+	private bool active = false;
+
+	private List<Matrix> vectors = new List<Matrix>();
+	private Matrix matrixFromVectorsOriginal = new Matrix(3, 3);
+	private Matrix matrixFromVectorsResult = new Matrix(3, 3);
+
+	private MatrixHelper matrixHelper = new();
+
+	private bool linearDependent = false;
+
+	private void Start()
+	{
+		active = true;
+		for (int i = 0; i < dimensionModel.RowSize; i++)
+		{
+			vectors.Add(new Matrix(dimensionModel.RowSize, 1));
+		}
+	}
+
+	private void Reset()
+	{
+		vectors.Clear();
+		active = false;
+		solved = false;
+	}
+
+	private void Solve()
+	{
+		try
+		{
+			matrixFromVectorsOriginal = matrixHelper.BuildMatrixFromVectors(vectors);
+			matrixFromVectorsResult = new Matrix(matrixFromVectorsOriginal.RowSize, matrixFromVectorsOriginal.ColumnSize);
+			Array.Copy(matrixFromVectorsOriginal.MatrixBoard, matrixFromVectorsResult.MatrixBoard, matrixFromVectorsOriginal.MatrixBoard.Length);
+			linearDependent = matrixHelper.LinearDependence(matrixFromVectorsResult);
+			solved = true;
+		}
+		catch (VectorException e)
+		{
+			Console.WriteLine(e.Message);
+		}
+	}
+
+	private void GenerateRandomInput()
+	{
+		foreach (Matrix m in vectors)
+		{
+			m.FillMatrixWithRandomNumbers();
+		}
+	}
+}

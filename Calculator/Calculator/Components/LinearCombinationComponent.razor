@@ -1,0 +1,191 @@
+﻿@using Calculator.Classes;
+@using Calculator.Models;
+
+@{
+	if (!active)
+	{
+		<EditForm Model="@dimensionModel" OnValidSubmit="@Start">
+			<DataAnnotationsValidator />
+			<ValidationSummary />
+			<div class="linear-combination">
+				<div class="child">
+					<p>
+						<label>
+							Rows:
+							<InputNumber @bind-Value="dimensionModel.RowSize" />
+						</label>
+					</p>
+				</div>
+				<button class="button-purple" type="submit">Start</button>
+			</div>
+		</EditForm>
+	}
+	else
+	{
+		<button class="button-purple" @onclick="Solve">Result</button>
+		<button class="button-purple" @onclick="Reset">Reset</button>
+		<button class="button-purple" @onclick="GenerateRandomInput">Random Input</button>
+		<div class="linear-combination">
+			@{
+				foreach (Matrix v in vectors)
+				{
+					<div class="child">
+						<MatrixComponent Matrix="v" Edit="true"></MatrixComponent>
+					</div>
+				}
+				<div class="child">
+					<p>
+						Vector:
+					</p>
+				</div>
+				<div class="child">
+					<MatrixComponent Matrix="vector" Edit="true"></MatrixComponent>
+				</div>
+			}
+		</div>
+		<br />
+		@if (solved)
+		{
+			<h3>Ergebnis (Original Matrix, Matrix nach Gauß-Jordan):</h3>
+			<div class="linear-combination">
+				<div class="child">
+					<MatrixComponent Matrix="matrixFromVectorsOriginal"></MatrixComponent>
+				</div>
+				<div class="child">
+					<MatrixComponent Matrix="matrixFromVectorsResult"></MatrixComponent>
+				</div>
+				<div class="child">
+					<p>
+						Die Vectoren sind @(linearDependent ? "linear abhängig" : "linear unabhänging")!
+					</p>
+				</div>
+			</div>
+			@if (!linearDependent)
+			{
+				<br />
+				<h3>Nach Gauß-Jordan:</h3>
+				<div class="linear-combination">
+					<div class="child">
+						<div class="result-left-border"></div>
+					</div>
+					<div class="child">
+						<MatrixComponent Matrix="matrixForLinearCombination" BracketStyle="false" Edit="false"></MatrixComponent>
+
+					</div>
+					<div class="child">
+						<div class="result-middle-border"></div>
+					</div>
+					<div class="child">
+						<MatrixComponent Matrix="vectorForLinearCombination" BracketStyle="false" Edit="false"></MatrixComponent>
+					</div>
+					<div class="child">
+						<div class="result-right-border"></div>
+					</div>
+				</div>
+				<br />
+				<h3>Linearkombination:</h3>
+				<div class="linear-combination">
+					@for (int i = 0; i < vectors.Count; i++)
+					{
+						<div class="child">
+							<p>
+								@vectorForLinearCombination.MatrixBoard[i, 0]   * 
+							</p>
+						</div>
+						<div class="child">
+							<MatrixComponent Matrix="vectors[i]"></MatrixComponent>
+						</div>
+
+						if(i < vectors.Count - 1)
+						{
+							<div class="child">
+								<p>
+									+
+								</p>
+							</div>
+						}
+					}
+					<div class="child">
+						<p>
+							=
+						</p>
+					</div>
+					<div class="child">
+						<MatrixComponent Matrix="vector"></MatrixComponent>
+					</div>				
+				</div>
+			}
+		}
+	}
+}
+
+@code {
+	private MatrixDimensionModel dimensionModel = new();
+
+	private bool solved = false;
+	private bool active = false;
+
+	private List<Matrix> vectors = new List<Matrix>();
+	private Matrix matrixFromVectorsOriginal = new Matrix(3, 3);
+	private Matrix matrixFromVectorsResult = new Matrix(3, 3);
+
+	private Matrix matrixForLinearCombination = new Matrix(3, 3);
+	private Matrix vectorForLinearCombination = new Matrix(3, 1);
+
+	private Matrix vector = new Matrix(3, 1);
+
+	private MatrixHelper matrixHelper = new();
+
+	private bool linearDependent = false;
+
+	private void Start()
+	{
+		active = true;
+		vector = new Matrix(dimensionModel.RowSize, 1);
+		for (int i = 0; i < dimensionModel.RowSize; i++)
+		{
+			vectors.Add(new Matrix(dimensionModel.RowSize, 1));
+		}
+	}
+
+	private void Reset()
+	{
+		vectors.Clear();
+		active = false;
+		solved = false;
+	}
+
+	private void Solve()
+	{
+		try
+		{
+			matrixFromVectorsOriginal = matrixHelper.BuildMatrixFromVectors(vectors);
+			matrixFromVectorsResult = new Matrix(matrixFromVectorsOriginal.RowSize, matrixFromVectorsOriginal.ColumnSize);
+			Array.Copy(matrixFromVectorsOriginal.MatrixBoard, matrixFromVectorsResult.MatrixBoard, matrixFromVectorsOriginal.MatrixBoard.Length);
+			linearDependent = matrixHelper.LinearDependence(matrixFromVectorsResult);
+			solved = true;
+
+			if (!linearDependent)
+			{
+				matrixForLinearCombination = new Matrix(matrixFromVectorsOriginal.RowSize, matrixFromVectorsOriginal.ColumnSize);
+				Array.Copy(matrixFromVectorsOriginal.MatrixBoard, matrixForLinearCombination.MatrixBoard, matrixFromVectorsOriginal.MatrixBoard.Length);
+				vectorForLinearCombination = new Matrix(vector.RowSize, 1);
+				Array.Copy(vector.MatrixBoard, vectorForLinearCombination.MatrixBoard, vector.MatrixBoard.Length);
+				matrixHelper.GaußJordan(matrixForLinearCombination, vectorForLinearCombination);
+			}
+		}
+		catch (VectorException e)
+		{
+			Console.WriteLine(e.Message);
+		}
+	}
+
+	private void GenerateRandomInput()
+	{
+		foreach (Matrix m in vectors)
+		{
+			m.FillMatrixWithRandomNumbers();
+		}
+		vector.FillMatrixWithRandomNumbers();
+	}
+}

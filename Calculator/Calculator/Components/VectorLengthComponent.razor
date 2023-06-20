@@ -92,7 +92,6 @@
 	private void Start()
 	{
 		active = true;
-		//add 2 empty matrices
 		vectorA = new Matrix(dimensionModel.RowSize, 1);
 	}
 
@@ -110,7 +109,7 @@
 			result = vectorHelper.CalculateLength(vectorA);
 			solved = true;
 		}
-		catch (WrongDimesnionException e)
+		catch (VectorException e)
 		{
 			Console.WriteLine(e.Message);
 		}
