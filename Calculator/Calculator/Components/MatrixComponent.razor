@@ -96,7 +96,21 @@
 			int inputNumber;
 			if (int.TryParse(key, out inputNumber))
 			{
-				Matrix.MatrixBoard[activeField.RowIdx, activeField.ColIdx] = Convert.ToInt32(args.Key);
+				double currentValue = Matrix.MatrixBoard[activeField.RowIdx, activeField.ColIdx];
+
+				if(currentValue == 0)
+				{
+					Matrix.MatrixBoard[activeField.RowIdx, activeField.ColIdx] = Convert.ToInt32(args.Key);
+				}
+				else
+				{
+					//max 4 digits allowed
+					if(Math.Abs(currentValue) <= 999)
+					{
+						string currentValueText = currentValue.ToString() + args.Key;
+						Matrix.MatrixBoard[activeField.RowIdx, activeField.ColIdx] = Convert.ToInt32(currentValueText);
+					}
+				}
 			}
 		}
 	}
