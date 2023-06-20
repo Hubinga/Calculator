@@ -16,7 +16,7 @@
 				sum += (vector.MatrixBoard[i, 0] * vector.MatrixBoard[i, 0]);
 			}
 
-			return Math.Sqrt(sum);
+			return Math.Round(Math.Sqrt(sum), 2);
 		}
 
 		/// <summary>
@@ -58,6 +58,7 @@
 
 			double first = vectorA.MatrixBoard[1, 0] * vectorB.MatrixBoard[2, 0] - vectorA.MatrixBoard[2, 0] * vectorB.MatrixBoard[1, 0];
 			double second = vectorA.MatrixBoard[0, 0] * vectorB.MatrixBoard[2, 0] - vectorA.MatrixBoard[2, 0] * vectorB.MatrixBoard[0, 0];
+			second *= -1;
 			double third = vectorA.MatrixBoard[0, 0] * vectorB.MatrixBoard[1, 0] - vectorA.MatrixBoard[1, 0] * vectorB.MatrixBoard[0, 0];
 
 			return new double[3, 1] { { first }, { second }, { third } };

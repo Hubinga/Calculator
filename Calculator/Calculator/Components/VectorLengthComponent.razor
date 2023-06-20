@@ -1,5 +1,123 @@
-﻿<h3>VectorLengthComponent</h3>
+﻿@using Calculator.Classes;
+@using Calculator.Models;
+
+@{
+	if (!active)
+	{
+		<EditForm Model="@dimensionModel" OnValidSubmit="@Start">
+			<DataAnnotationsValidator />
+			<ValidationSummary />
+			<div class="vector-length">
+				<div class="child">
+					<p>
+						<label>
+							Rows:
+							<InputNumber @bind-Value="dimensionModel.RowSize" />
+						</label>
+					</p>
+				</div>
+				<button class="button-purple" type="submit">Start</button>
+			</div>
+		</EditForm>
+	}
+	else
+	{
+		<button class="button-purple" @onclick="Solve">Result</button>
+		<button class="button-purple" @onclick="Reset">Reset</button>
+		<button class="button-purple" @onclick="GenerateRandomInput">Random Input</button>
+		<div class="vector-length">
+			@{
+				<div class="child">
+					<div class="length-left-border"></div>
+				</div>
+				<div class="child">
+					<div class="length-left-border"></div>
+				</div>
+				<div class="child">
+					<MatrixComponent Matrix="vectorA" Edit="true"></MatrixComponent>
+				</div>
+				<div class="child">
+					<div class="length-right-border"></div>
+				</div>
+				<div class="child">
+					<div class="length-right-border"></div>
+				</div>
+				<div class="child">
+					<p>=</p>
+				</div>
+				if (solved)
+				{
+					<div class="child">
+						<p>
+							@result
+						</p>
+					</div>
+				}
+			}
+		</div>
+		<br />
+		@if (solved)
+		{
+			<h3>Einheitsvektor:</h3>
+		}
+		<div class="vector-length">
+			@{
+				if (solved)
+				{
+					<div class="child">
+						<p>
+							1/@result
+						</p>
+					</div>
+					<div class="child">
+						<MatrixComponent Matrix="vectorA" Edit="true"></MatrixComponent>
+					</div>
+				}
+			}
+		</div>
+	}
+}
 
 @code {
+	private MatrixDimensionModel dimensionModel = new();
 
+	private bool solved = false;
+	private bool active = false;
+
+	private Matrix vectorA = new Matrix(3, 1);
+
+	private double result = 0;
+	private VectorHelper vectorHelper = new();
+
+	private void Start()
+	{
+		active = true;
+		//add 2 empty matrices
+		vectorA = new Matrix(dimensionModel.RowSize, 1);
+	}
+
+	private void Reset()
+	{
+		vectorA = new Matrix(3, 1);
+		active = false;
+		solved = false;
+	}
+
+	private void Solve()
+	{
+		try
+		{
+			result = vectorHelper.CalculateLength(vectorA);
+			solved = true;
+		}
+		catch (WrongDimesnionException e)
+		{
+			Console.WriteLine(e.Message);
+		}
+	}
+
+	private void GenerateRandomInput()
+	{
+		vectorA.FillMatrixWithRandomNumbers();
+	}
 }

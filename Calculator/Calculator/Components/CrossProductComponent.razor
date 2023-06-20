@@ -1,5 +1,69 @@
-﻿<h3>CrossProductComponent</h3>
+﻿@using Calculator.Classes;
+@using Calculator.Models;
+
+@{
+	<button class="button-purple" @onclick="Solve">Result</button>
+	<button class="button-purple" @onclick="Reset">Reset</button>
+	<button class="button-purple" @onclick="GenerateRandomInput">Random Input</button>
+	<div class="cross-product">
+		@{
+			<div class="child">
+				<MatrixComponent Matrix="vectorA" Edit="true"></MatrixComponent>
+			</div>
+			<div class="child">
+				<p>x</p>
+			</div>
+			<div class="child">
+				<MatrixComponent Matrix="vectorB" Edit="true"></MatrixComponent>
+			</div>
+			<div class="child">
+				<p>=</p>
+			</div>
+			if (solved)
+			{
+				<div class="child">
+					<MatrixComponent Matrix="vectorC" Edit="true"></MatrixComponent>
+				</div>
+			}
+		}
+	</div>
+	
+}
 
 @code {
+	private MatrixDimensionModel dimensionModel = new();
 
+	private bool solved = false;
+
+	private Matrix vectorA = new Matrix(3, 1);
+	private Matrix vectorB = new Matrix(3, 1);
+	private Matrix vectorC = new Matrix(3, 1);
+
+	private VectorHelper vectorHelper = new();
+
+	private void Reset()
+	{
+		vectorA = new Matrix(3, 1);
+		vectorB = new Matrix(3, 1);
+		solved = false;
+	}
+
+	private void Solve()
+	{
+		try
+		{
+			vectorC = new Matrix(vectorHelper.CalculateCrossProduct(vectorA, vectorB));
+			solved = true;
+		}
+		catch (WrongDimesnionException e)
+		{
+			Console.WriteLine(e.Message);
+		}
+	}
+
+	private void GenerateRandomInput()
+	{
+		vectorA.FillMatrixWithRandomNumbers();
+		vectorB.FillMatrixWithRandomNumbers();
+	}
 }
