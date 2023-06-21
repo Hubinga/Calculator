@@ -1,0 +1,96 @@
+﻿@using Calculator.Classes;
+@using Calculator.Models;
+@{
+	if (!solved)
+	{
+		<div class="gini">
+			<div class="child">
+				<p>
+					<label>
+						Input Values:
+						<input @bind="inputValues" />
+					</label>
+				</p>
+			</div>
+			<button class="button-purple" @onclick="Start">Start</button>
+		</div>
+	}
+	<button class="button-purple" @onclick="Reset">Reset</button>
+	<button class="button-purple" @onclick="Solve">Solve</button>
+	if(giniDataModels.Count > 0)
+	{
+		<div>
+			<table>
+				<tr>
+					<th>Werte</th>
+					<th>aufsummierte Werte</th>
+					<th>Anteil an Gesamtsumme</th>
+					<th>Prozentualer Anteil</th>
+				</tr>
+				@foreach (GiniDataModel giniDataModel in giniDataModels)
+				{
+					<tr>
+						<td>@giniDataModel.Value</td>
+						<td>@giniDataModel.SumedUpValue</td>
+						<td>@giniDataModel.shareOfTotal</td>
+						<td>@giniDataModel.Percentage</td>
+					</tr>
+				}
+			</table>
+		</div>
+	}	
+	<br />
+	if (solved)
+	{
+		<div>
+			<h3>Gini Koeffizient: @giniCoeffizient</h3>
+			<h3>Gini Index: @(giniCoeffizient * 100)%</h3>
+		</div>
+	}
+	
+}
+@code {
+	private bool solved = false;
+	private List<GiniDataModel> giniDataModels = new List<GiniDataModel>();
+	private GiniIndexHelper giniIndexHelper = new();
+	private double giniCoeffizient = -1;
+	private string inputValues = "";
+
+	private void Start()
+	{
+		string[] splitedInputValues = inputValues.Split(" ");
+		List<double> values = new List<double>();
+
+		foreach (string item in splitedInputValues)
+		{
+			double value;
+
+			if(double.TryParse(item, out value))
+			{
+				values.Add(value);
+			}
+			else
+			{
+				Console.WriteLine("{0} is not a correct value!", item);
+			}
+		}
+
+		values.Sort();
+
+		giniDataModels = giniIndexHelper.GenerateGiniDataModels(values);
+	}
+
+	private void Solve()
+	{
+				giniCoeffizient = giniIndexHelper.CalculateGiniCoeffizient(giniDataModels); 
+		solved = true;
+	}
+
+	private void Reset()
+	{
+		giniCoeffizient = -1;
+		giniDataModels.Clear();
+		inputValues = "";
+		solved = false;
+	}
+}

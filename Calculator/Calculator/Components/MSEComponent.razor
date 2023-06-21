@@ -1,0 +1,108 @@
+﻿@using Calculator.Classes;
+@using Calculator.Models;
+@{
+	<div class="mse">
+		<div class="child">
+			<p>
+				<label>
+					Input Values:
+					<input @bind="inputValuePair" />
+				</label>
+			</p>
+		</div>
+		<button class="button-purple" @onclick="Add">Add Value Pair</button>
+		<button class="button-purple" @onclick="RemoveLastPair">Remove Value Pair</button>
+	</div>
+	<button class="button-purple" @onclick="Reset">Reset</button>
+	<button class="button-purple" @onclick="Solve" disabled="@(valuePairs.Count == 0)">Solve</button>
+	<div>
+		<table>
+			<tr>
+				<th>erwarteter Wert</th>
+				<th>geschätzter Wert</th>
+			</tr>
+			@foreach (Tuple<double, double> pair in valuePairs)
+			{
+				<tr>
+					<td>@pair.Item1</td>
+					<td>@pair.Item2</td>
+				</tr>
+			}
+		</table>
+	</div>
+	<br />
+	if (solved)
+	{
+		<div>
+			<h3>MSE: @mse</h3>
+		</div>
+	}
+}
+
+@code {
+	private bool solved = false;
+	private List<Tuple<double, double>> valuePairs = new List<Tuple<double, double>>();
+	private double mse = 0;
+	private string inputValuePair = "";
+
+	private void Add()
+	{
+		string[] splitedInputPair = inputValuePair.Split(" ");
+
+		if (splitedInputPair.Length == 2)
+		{
+			double actualValue;
+			double estimatedValue;
+
+			//actual value
+			if (double.TryParse(splitedInputPair[0], out actualValue))
+			{
+				//estimated value
+				if (double.TryParse(splitedInputPair[1], out estimatedValue))
+				{
+					valuePairs.Add(new Tuple<double, double>(actualValue, estimatedValue));
+				}
+				else
+				{
+					Console.WriteLine("{0} is not a correct value!", splitedInputPair[1]);
+				}
+			}
+			else
+			{
+				Console.WriteLine("{0} is not a correct value!", splitedInputPair[0]);
+			}
+		}
+		else
+		{
+			Console.WriteLine("A value pair has to be of size 2 and with space separated!");
+		}
+
+		inputValuePair = "";
+	}
+
+	private void RemoveLastPair()
+	{
+		if(valuePairs.Count > 0)
+		{
+			valuePairs.RemoveAt(valuePairs.Count - 1);
+		}
+	}
+
+	private void Solve()
+	{
+		//mse: sum((actual value - estimated value)^2)/n
+		double sum = valuePairs.Sum(p => (p.Item1 - p.Item2) * (p.Item1 - p.Item2));
+
+		mse = sum / valuePairs.Count;
+
+		solved = true;
+	}
+
+	private void Reset()
+	{
+		valuePairs.Clear();
+		inputValuePair = "";
+		solved = false;
+		mse = 0;
+	}
+}
