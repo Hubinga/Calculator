@@ -1,0 +1,91 @@
+﻿@using Calculator.Classes;
+@using Calculator.Models;
+@{
+	if (!solved)
+	{
+		<div class="entropy">
+			<div class="child">
+				<p>
+					<label>
+						Input Values:
+						<input @bind="inputValues" />
+					</label>
+				</p>
+			</div>
+			<button class="button-purple" @onclick="Start">Start</button>
+		</div>
+	}
+	<button class="button-purple" @onclick="Reset">Reset</button>
+	<button class="button-purple" @onclick="Solve">Solve</button>
+	if (valuePairs.Count > 0)
+	{
+		<div>
+			<table>
+				<tr>
+					<th>Wert</th>
+					<th>Wahrscheinlichkeit</th>
+				</tr>
+				@foreach (var pair in valuePairs)
+				{
+					<tr>
+						<td>@pair.Key</td>
+						<td>@pair.Value</td>
+					</tr>
+				}
+			</table>
+		</div>
+	}
+	<br />
+	if (solved)
+	{
+		<div>
+			<h3>Entropy: @entropy</h3>
+		</div>
+	}
+
+}
+@code {
+	private bool solved = false;
+	private Dictionary<double, double> valuePairs = new Dictionary<double, double>();
+	private EntropyHelper entropyHelper = new();
+	private double entropy = 0;
+	private string inputValues = "";
+
+	private void Start()
+	{
+		string[] splitedInputValues = inputValues.Split(" ");
+		List<double> values = new List<double>();
+
+		foreach (string item in splitedInputValues)
+		{
+			double value;
+
+			if (double.TryParse(item, out value))
+			{
+				values.Add(value);
+			}
+			else
+			{
+				Console.WriteLine("{0} is not a correct value!", item);
+			}
+		}
+
+		values.Sort();
+
+		valuePairs = entropyHelper.GenerateEntropyDictionary(values);
+	}
+
+	private void Solve()
+	{
+		entropy = entropyHelper.CalculateEntropy(valuePairs);
+		solved = true;
+	}
+
+	private void Reset()
+	{
+		entropy = 0;
+		valuePairs.Clear();
+		inputValues = "";
+		solved = false;
+	}
+}
