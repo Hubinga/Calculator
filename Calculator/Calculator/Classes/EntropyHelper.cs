@@ -4,7 +4,7 @@ namespace Calculator.Classes
 {
 	public class EntropyHelper
 	{
-		public Dictionary<double, double> GenerateEntropyDictionary(List<double> values)
+		public List<EntropyDataModel> GenerateEntropyDictionary(List<double> values)
 		{
 			Dictionary<double, double> valuePairs = new Dictionary<double, double>();
 
@@ -29,21 +29,35 @@ namespace Calculator.Classes
 				valuePairs[firstKey] = 1;
 			}
 
-			return valuePairs;
-		}
+			List<EntropyDataModel> dataModels = new List<EntropyDataModel>();
 
-		public double CalculateEntropy(Dictionary<double, double> valuePairs)
-		{
-
-			double sum = valuePairs.Values.Sum(p => p * Math.Log10(p));
-
-			//set very small values to 0: e.g. -0,001 -> 0
-			if (Math.Abs(sum) < 0.009)
+			foreach (var pair in valuePairs)
 			{
-				sum = 0;
+				double surprise;
+				if (valuePairs.Count > 2)
+				{
+					surprise = Math.Log10(1 / pair.Value);
+				}
+				else
+				{
+					surprise = Math.Log2(1 / pair.Value);
+				}
+
+				dataModels.Add(new EntropyDataModel(pair.Key, pair.Value, Math.Round(surprise, 3)));
 			}
 
-			double entropy = sum == 0 ? sum : -1 * sum;
+			return dataModels;
+		}
+
+		public double CalculateEntropy(List<EntropyDataModel> dataModels)
+		{
+			double entropy = dataModels.Sum(d=>d.Probability * d.Surprise);
+			
+			//set very small values to 0: e.g. -0,001 -> 0
+			if (Math.Abs(entropy) < 0.009)
+			{
+				entropy = 0;
+			}
 
 			return Math.Round(entropy, 3); 
 		}

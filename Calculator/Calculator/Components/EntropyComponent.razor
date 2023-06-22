@@ -17,19 +17,21 @@
 	}
 	<button class="button-purple" @onclick="Reset">Reset</button>
 	<button class="button-purple" @onclick="Solve">Solve</button>
-	if (valuePairs.Count > 0)
+	if (dataModels.Count > 0)
 	{
 		<div>
 			<table>
 				<tr>
 					<th>Wert</th>
 					<th>Wahrscheinlichkeit</th>
+					<th>Überraschung</th>
 				</tr>
-				@foreach (var pair in valuePairs)
+				@foreach (var model in dataModels)
 				{
 					<tr>
-						<td>@pair.Key</td>
-						<td>@pair.Value</td>
+						<td>@model.Value</td>
+						<td>@model.Probability</td>
+						<td>@model.Surprise</td>
 					</tr>
 				}
 			</table>
@@ -46,7 +48,7 @@
 }
 @code {
 	private bool solved = false;
-	private Dictionary<double, double> valuePairs = new Dictionary<double, double>();
+	private List<EntropyDataModel> dataModels = new List<EntropyDataModel>();
 	private EntropyHelper entropyHelper = new();
 	private double entropy = 0;
 	private string inputValues = "";
@@ -72,19 +74,19 @@
 
 		values.Sort();
 
-		valuePairs = entropyHelper.GenerateEntropyDictionary(values);
+		dataModels = entropyHelper.GenerateEntropyDictionary(values);
 	}
 
 	private void Solve()
 	{
-		entropy = entropyHelper.CalculateEntropy(valuePairs);
+		entropy = entropyHelper.CalculateEntropy(dataModels);
 		solved = true;
 	}
 
 	private void Reset()
 	{
 		entropy = 0;
-		valuePairs.Clear();
+		dataModels.Clear();
 		inputValues = "";
 		solved = false;
 	}
