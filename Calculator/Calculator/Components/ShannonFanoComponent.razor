@@ -34,7 +34,23 @@
 	if (solved)
 	{
 		<div>
-
+			<div>
+				<table>
+					<tr>
+						<th>Wert</th>
+						<th>Wahrscheinlichkeit</th>
+						<th>Encoding</th>
+					</tr>
+					@foreach (var result in encodingResults)
+					{
+						<tr>
+							<td>@result.Item1</td>
+							<td>@result.Item2</td>
+							<td>@result.Item3</td>
+						</tr>
+					}
+				</table>
+			</div>
 		</div>
 	}
 }
@@ -42,6 +58,7 @@
 @code {
 	private bool solved = false;
 	private List<Tuple<string, int>> valuePairs = new List<Tuple<string, int>>();
+	private List<Tuple<string, double, string>> encodingResults = new List<Tuple<string, double, string>>();
 
 	private ShannonFano shannonFano = new();
 	private string inputValuePair = "";
@@ -81,8 +98,21 @@
 
 	private void Solve()
 	{
-		List<Tuple<string, int>> testPairs = new List<Tuple<string, int>>();
+		shannonFano.GenerateShannonFano(valuePairs);
+		encodingResults = shannonFano.GetEncodingResults();
+		solved = true;
+	}
 
+	private void Reset()
+	{
+		valuePairs.Clear();
+		inputValuePair = "";
+		solved = false;
+	}
+
+	private void TestCase()
+	{
+		List<Tuple<string, int>> testPairs = new List<Tuple<string, int>>();
 		testPairs.Add(new Tuple<string, int>("PG", 1));
 		testPairs.Add(new Tuple<string, int>("DH", 1));
 		testPairs.Add(new Tuple<string, int>("BD", 1));
@@ -95,13 +125,5 @@
 		testPairs.Add(new Tuple<string, int>("SB", 8));
 
 		shannonFano.GenerateShannonFano(testPairs);
-		solved = true;
-	}
-
-	private void Reset()
-	{
-		valuePairs.Clear();
-		inputValuePair = "";
-		solved = false;
 	}
 }

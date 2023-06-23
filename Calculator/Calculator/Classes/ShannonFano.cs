@@ -7,8 +7,36 @@ namespace Calculator.Classes
 		public Dictionary<string, string> valueEncodings { get; private set; } = new Dictionary<string, string>();
 		public List<Tuple<string, double>> valueProbabilities { get; private set; } = new List<Tuple<string, double>>();
 
+		public List<Tuple<string, double, string>> GetEncodingResults()
+		{
+			List<Tuple<string, double, string>> encodingResults = new List<Tuple<string, double, string>>();
+
+			for (int i = 0; i < valueProbabilities.Count; i++)
+			{
+				encodingResults.Add(new Tuple<string, double, string>(valueProbabilities[i].Item1, valueProbabilities[i].Item2, valueEncodings[valueProbabilities[i].Item1]));
+			}
+
+			return encodingResults;
+		}
+
+		public void PrintEncodings()
+		{
+			foreach (var pair in valueEncodings)
+			{
+				Console.WriteLine("{0} : {1}", pair.Key, pair.Value);
+			}
+		}
+
+		private void Clear()
+		{
+			valueEncodings.Clear();
+			valueProbabilities.Clear();
+		}
+
 		public void GenerateShannonFano(List<Tuple<string, int>> valuePairs)
 		{
+			Clear();
+
 			double totalAmount = valuePairs.Sum(a => a.Item2);
 
 			//store values with probabilities 
@@ -27,24 +55,10 @@ namespace Calculator.Classes
 			}
 
 			NextSubset(1, 0, valueProbabilities.Count - 1, true);
-			PrintEncodings();
-		}
-
-		public void PrintEncodings()
-		{
-			foreach (var pair in valueEncodings)
-			{
-                Console.WriteLine("{0} : {1}", pair.Key, pair.Value);
-            }
 		}
 
 		private void NextSubset(double probabilityOfSubset, int startIdxSubset, int endIdxSubset, bool left)
 		{
-
-            Console.WriteLine("left: {0}, startIdx: {1}, endIdx: {2}", left, startIdxSubset, endIdxSubset);
-			PrintEncodings();
-            Console.WriteLine();
-
             //not at first call (not a subset)
             if (probabilityOfSubset < 1)
 			{
