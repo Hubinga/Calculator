@@ -1,0 +1,107 @@
+﻿@using Calculator.Classes;
+@using Calculator.Models;
+@{
+	<div class="shannon-fano">
+		<div class="child">
+			<p>
+				<label>
+					Input Values:
+					<input @bind="inputValuePair" />
+				</label>
+			</p>
+		</div>
+		<button class="button-purple" @onclick="Add">Add Value Pair</button>
+		<button class="button-purple" @onclick="RemoveLastPair">Remove Value Pair</button>
+	</div>
+	<button class="button-purple" @onclick="Reset">Reset</button>
+	<button class="button-purple" @onclick="Solve" disabled="@(valuePairs.Count == 0)">Solve</button>
+	<div>
+		<table>
+			<tr>
+				<th>Wert</th>
+				<th>Anzahl</th>
+			</tr>
+			@foreach (Tuple<string, int> pair in valuePairs)
+			{
+				<tr>
+					<td>@pair.Item1</td>
+					<td>@pair.Item2</td>
+				</tr>
+			}
+		</table>
+	</div>
+	<br />
+	if (solved)
+	{
+		<div>
+
+		</div>
+	}
+}
+
+@code {
+	private bool solved = false;
+	private List<Tuple<string, int>> valuePairs = new List<Tuple<string, int>>();
+
+	private ShannonFano shannonFano = new();
+	private string inputValuePair = "";
+
+	private void Add()
+	{
+		string[] splitedInputPair = inputValuePair.Split(" ");
+
+		if (splitedInputPair.Length == 2)
+		{
+			int amount;
+			//estimated value
+			if (int.TryParse(splitedInputPair[1], out amount))
+			{
+				valuePairs.Add(new Tuple<string, int>(splitedInputPair[0], amount));
+			}
+			else
+			{
+				Console.WriteLine("{0} is not a correct value!", splitedInputPair[1]);
+			}
+		}
+		else
+		{
+			Console.WriteLine("A value pair has to be of size 2 and with space separated!");
+		}
+
+		inputValuePair = "";
+	}
+
+	private void RemoveLastPair()
+	{
+		if (valuePairs.Count > 0)
+		{
+			valuePairs.RemoveAt(valuePairs.Count - 1);
+		}
+	}
+
+	private void Solve()
+	{
+		List<Tuple<string, int>> testPairs = new List<Tuple<string, int>>();
+
+		testPairs.Add(new Tuple<string, int>("PG", 1));
+		testPairs.Add(new Tuple<string, int>("DH", 1));
+		testPairs.Add(new Tuple<string, int>("BD", 1));
+		testPairs.Add(new Tuple<string, int>("BT", 2));
+		testPairs.Add(new Tuple<string, int>("B3", 3));
+		testPairs.Add(new Tuple<string, int>("KAM", 3));
+		testPairs.Add(new Tuple<string, int>("DW", 4));
+		testPairs.Add(new Tuple<string, int>("L", 5));
+		testPairs.Add(new Tuple<string, int>("BS", 6));
+		testPairs.Add(new Tuple<string, int>("SB", 8));
+
+		shannonFano.GenerateShannonFano(testPairs);
+		solved = true;
+	}
+
+	private void Reset()
+	{
+		valuePairs.Clear();
+		inputValuePair = "";
+		solved = false;
+	}
+}
