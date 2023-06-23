@@ -61,5 +61,18 @@ namespace Calculator.Classes
 
 			return Math.Round(entropy, 3); 
 		}
+
+		public double CalculateEntropyForBits(List<EncodingDataModel> encodingDataModels)
+		{
+			double entropy = encodingDataModels.Sum(d => d.Probability * Math.Log2(1/d.Probability));
+
+			//set very small values to 0: e.g. -0,001 -> 0
+			if (Math.Abs(entropy) < 0.009)
+			{
+				entropy = 0;
+			}
+
+			return Math.Round(entropy, 3);
+		}
 	}
 }

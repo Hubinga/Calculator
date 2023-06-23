@@ -1,60 +1,39 @@
-﻿using System.Collections.Generic;
+﻿using Calculator.Models;
+using System.Collections.Generic;
 
 namespace Calculator.Classes
 {
 	public class ShannonFano
 	{
-		public Dictionary<string, string> valueEncodings { get; private set; } = new Dictionary<string, string>();
-		public List<Tuple<string, double>> valueProbabilities { get; private set; } = new List<Tuple<string, double>>();
+		public List<EncodingDataModel> encodingDataModels { get; private set; } = new List<EncodingDataModel>();
 
-		public List<Tuple<string, double, string>> GetEncodingResults()
+		public double CalculateEntropy()
 		{
-			List<Tuple<string, double, string>> encodingResults = new List<Tuple<string, double, string>>();
-
-			for (int i = 0; i < valueProbabilities.Count; i++)
-			{
-				encodingResults.Add(new Tuple<string, double, string>(valueProbabilities[i].Item1, valueProbabilities[i].Item2, valueEncodings[valueProbabilities[i].Item1]));
-			}
-
-			return encodingResults;
+			EntropyHelper entropyHelper = new EntropyHelper();
+			return entropyHelper.CalculateEntropyForBits(encodingDataModels);
 		}
 
-		public void PrintEncodings()
+		public double CalculateAverageMessageLenght()
 		{
-			foreach (var pair in valueEncodings)
-			{
-				Console.WriteLine("{0} : {1}", pair.Key, pair.Value);
-			}
-		}
-
-		private void Clear()
-		{
-			valueEncodings.Clear();
-			valueProbabilities.Clear();
+			return Math.Round(encodingDataModels.Sum(e => e.Probability * e.Encoding.Length),3);
 		}
 
 		public void GenerateShannonFano(List<Tuple<string, int>> valuePairs)
 		{
-			Clear();
+			encodingDataModels.Clear();
 
 			double totalAmount = valuePairs.Sum(a => a.Item2);
 
 			//store values with probabilities 
 			foreach (var pair in valuePairs)
 			{
-				valueProbabilities.Add(new Tuple<string, double>(pair.Item1, pair.Item2 / totalAmount));
+				encodingDataModels.Add(new EncodingDataModel(pair.Item1, pair.Item2 / totalAmount, ""));
 			}
 
 			//sort ascending
-			valueProbabilities.Sort((x, y) => x.Item2.CompareTo(y.Item2));
+			encodingDataModels.Sort((x, y) => x.Probability.CompareTo(y.Probability));
 
-			//initialize encoding dictionary with empty code
-			foreach (var pair in valuePairs)
-			{
-				valueEncodings[pair.Item1] = "";
-			}
-
-			NextSubset(1, 0, valueProbabilities.Count - 1, true);
+			NextSubset(1, 0, encodingDataModels.Count - 1, true);
 		}
 
 		private void NextSubset(double probabilityOfSubset, int startIdxSubset, int endIdxSubset, bool left)
@@ -65,7 +44,7 @@ namespace Calculator.Classes
 				//add code to encoding dictionary: 0 if left side, 1 if right side
 				for (int i = startIdxSubset; i <= endIdxSubset; i++)
 				{
-					valueEncodings[valueProbabilities[i].Item1] += left ? "0" : "1";
+					encodingDataModels[i].Encoding += left ? "0" : "1";
 				}
 			}
 
@@ -81,7 +60,7 @@ namespace Calculator.Classes
 
 			for (int i = startIdxSubset; i <= endIdxSubset; i++)
 			{
-				double probabilityValue = valueProbabilities[i].Item2;
+				double probabilityValue = encodingDataModels[i].Probability;
 
 				if (currentProbability + probabilityValue <= currentProbabilityOfSubset)
 				{

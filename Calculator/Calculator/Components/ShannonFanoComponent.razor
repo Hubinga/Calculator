@@ -44,13 +44,15 @@
 					@foreach (var result in encodingResults)
 					{
 						<tr>
-							<td>@result.Item1</td>
-							<td>@result.Item2</td>
-							<td>@result.Item3</td>
+							<td>@result.Value</td>
+							<td>@result.Probability</td>
+							<td>@result.Encoding</td>
 						</tr>
 					}
 				</table>
 			</div>
+			<h3>Mittlere Codewortlänge: @averageMessageLength bits</h3>
+			<h3>Entropie: @entropy bits</h3>
 		</div>
 	}
 }
@@ -58,10 +60,12 @@
 @code {
 	private bool solved = false;
 	private List<Tuple<string, int>> valuePairs = new List<Tuple<string, int>>();
-	private List<Tuple<string, double, string>> encodingResults = new List<Tuple<string, double, string>>();
+	private List<EncodingDataModel> encodingResults = new List<EncodingDataModel>();
 
 	private ShannonFano shannonFano = new();
 	private string inputValuePair = "";
+	private double entropy = 0;
+	private double averageMessageLength = 0;
 
 	private void Add()
 	{
@@ -99,14 +103,19 @@
 	private void Solve()
 	{
 		shannonFano.GenerateShannonFano(valuePairs);
-		encodingResults = shannonFano.GetEncodingResults();
+		encodingResults = shannonFano.encodingDataModels;
+		entropy = shannonFano.CalculateEntropy();
+		averageMessageLength = shannonFano.CalculateAverageMessageLenght();
 		solved = true;
 	}
 
 	private void Reset()
 	{
 		valuePairs.Clear();
+		encodingResults.Clear();
 		inputValuePair = "";
+		entropy = 0;
+		averageMessageLength = 0;
 		solved = false;
 	}
 
