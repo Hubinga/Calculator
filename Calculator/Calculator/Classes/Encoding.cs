@@ -1,9 +1,8 @@
 ﻿using Calculator.Models;
-using System.Collections.Generic;
 
 namespace Calculator.Classes
 {
-	public class ShannonFano
+	public class Encoding
 	{
 		public List<EncodingDataModel> encodingDataModels { get; private set; } = new List<EncodingDataModel>();
 
@@ -86,6 +85,30 @@ namespace Calculator.Classes
 			NextSubset(currentProbability, startIdxSubset, lastIdxFromSubset, true);
 			//right side
 			NextSubset(probabilityOfSubset - currentProbability, lastIdxFromSubset + 1, endIdxSubset, false);
+		}
+
+		public void GenerateHuffman(List<Tuple<string, int>> valuePairs)
+		{
+			encodingDataModels.Clear();
+
+			double totalAmount = valuePairs.Sum(a => a.Item2);
+
+			//store values with probabilities 
+			foreach (var pair in valuePairs)
+			{
+				encodingDataModels.Add(new EncodingDataModel(pair.Item1, pair.Item2 / totalAmount, ""));
+			}
+			//sort ascending
+			encodingDataModels.Sort((x, y) => x.Probability.CompareTo(y.Probability));
+
+
+
+			Console.WriteLine();
+		}
+
+		private void NextPair()
+		{
+
 		}
 	}
 }

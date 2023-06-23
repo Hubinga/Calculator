@@ -31,7 +31,7 @@
     transition-duration: .1s;
 }
 
-.shannon-fano {
+.encoding {
     display: flex;
     flex-wrap: wrap;
     justify-content: start;

@@ -1,7 +1,7 @@
 ﻿@using Calculator.Classes;
 @using Calculator.Models;
 @{
-	<div class="shannon-fano">
+	<div class="encoding">
 		<div class="child">
 			<p>
 				<label>
@@ -58,11 +58,14 @@
 }
 
 @code {
+	[Parameter]
+	public bool UseShannonFano { get; set; } = true;
+
 	private bool solved = false;
 	private List<Tuple<string, int>> valuePairs = new List<Tuple<string, int>>();
 	private List<EncodingDataModel> encodingResults = new List<EncodingDataModel>();
 
-	private ShannonFano shannonFano = new();
+	private Encoding encoding = new();
 	private string inputValuePair = "";
 	private double entropy = 0;
 	private double averageMessageLength = 0;
@@ -102,10 +105,18 @@
 
 	private void Solve()
 	{
-		shannonFano.GenerateShannonFano(valuePairs);
-		encodingResults = shannonFano.encodingDataModels;
-		entropy = shannonFano.CalculateEntropy();
-		averageMessageLength = shannonFano.CalculateAverageMessageLenght();
+		if (UseShannonFano)
+		{
+			encoding.GenerateShannonFano(valuePairs);
+		}
+		else
+		{
+			encoding.GenerateHuffman(valuePairs);
+		}
+
+		encodingResults = encoding.encodingDataModels;
+		entropy = encoding.CalculateEntropy();
+		averageMessageLength = encoding.CalculateAverageMessageLenght();
 		solved = true;
 	}
 
@@ -133,6 +144,14 @@
 		testPairs.Add(new Tuple<string, int>("BS", 6));
 		testPairs.Add(new Tuple<string, int>("SB", 8));
 
-		shannonFano.GenerateShannonFano(testPairs);
+		if (UseShannonFano)
+		{
+			encoding.GenerateShannonFano(testPairs);
+		}
+		else
+		{
+			encoding.GenerateHuffman(testPairs);
+		}
+
 	}
 }
