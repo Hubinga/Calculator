@@ -108,15 +108,19 @@ namespace Calculator.Classes
 			NextPair(currentData, treeValues);
 
 			BinaryTree tree = new();
-			//treeValues = treeValues.Distinct().ToList();
+			//root should be last element
 			treeValues.Reverse();
+			//add values to tree
 			foreach (string value in treeValues)
 			{
 				tree.Add(value);
 			}
 
 			tree.PrintLevelOrder();
-		}
+			//store encodings
+			tree.GetEncodings(encodingDataModels);
+			tree.PrintAllCodes();
+        }
 
 		private void NextPair(List<EncodingDataModel> currentData, List<string> treeValues)
 		{

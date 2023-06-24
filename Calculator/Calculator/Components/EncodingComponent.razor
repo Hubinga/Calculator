@@ -105,21 +105,23 @@
 
 	private void Solve()
 	{
-		/*if (UseShannonFano)
-			{
+		if (UseShannonFano)
+		{
 			encoding.GenerateShannonFano(valuePairs);
+			//TestCase();
 		}
 		else
-			{
-			encoding.GenerateHuffman(valuePairs);
+		{
+			//encoding.GenerateHuffman(valuePairs);
+			TestCase();
 		}
 
 		encodingResults = encoding.encodingDataModels;
 		entropy = encoding.CalculateEntropy();
 		averageMessageLength = encoding.CalculateAverageMessageLenght();
-		solved = true;*/
+		solved = true;
 
-		TestCase();
+		//TestCase();
 	}
 
 	private void Reset()
