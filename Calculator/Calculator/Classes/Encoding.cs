@@ -101,14 +101,46 @@ namespace Calculator.Classes
 			//sort ascending
 			encodingDataModels.Sort((x, y) => x.Probability.CompareTo(y.Probability));
 
+			List<EncodingDataModel> currentData = new List<EncodingDataModel>(encodingDataModels);
 
+			List<string> treeValues = new List<string>();
 
-			Console.WriteLine();
+			NextPair(currentData, treeValues);
+
+			BinaryTree tree = new();
+			//treeValues = treeValues.Distinct().ToList();
+			treeValues.Reverse();
+			foreach (string value in treeValues)
+			{
+				tree.Add(value);
+			}
+
+			tree.PrintLevelOrder();
 		}
 
-		private void NextPair()
+		private void NextPair(List<EncodingDataModel> currentData, List<string> treeValues)
 		{
+			//end
+			if(currentData.Count <= 1)
+			{
+				return;
+			}
 
+			//sort ascending
+			currentData.Sort((x, y) => x.Probability.CompareTo(y.Probability));
+
+            EncodingDataModel first = currentData[0];
+			EncodingDataModel second = currentData[1];
+			EncodingDataModel result = new EncodingDataModel(first.Value + second.Value, first.Probability + second.Probability, "");
+			currentData.RemoveAt(0);
+			currentData.RemoveAt(0);
+			currentData.Add(result);
+
+			treeValues.Add(first.Value);
+			treeValues.Add(second.Value);
+			treeValues.Add(result.Value);
+			
+			NextPair(currentData, treeValues);
 		}
 	}
 }

@@ -105,19 +105,21 @@
 
 	private void Solve()
 	{
-		if (UseShannonFano)
-		{
+		/*if (UseShannonFano)
+			{
 			encoding.GenerateShannonFano(valuePairs);
 		}
 		else
-		{
+			{
 			encoding.GenerateHuffman(valuePairs);
 		}
 
 		encodingResults = encoding.encodingDataModels;
 		entropy = encoding.CalculateEntropy();
 		averageMessageLength = encoding.CalculateAverageMessageLenght();
-		solved = true;
+		solved = true;*/
+
+		TestCase();
 	}
 
 	private void Reset()
@@ -143,6 +145,11 @@
 		testPairs.Add(new Tuple<string, int>("L", 5));
 		testPairs.Add(new Tuple<string, int>("BS", 6));
 		testPairs.Add(new Tuple<string, int>("SB", 8));
+
+		/*testPairs.Add(new Tuple<string, int>("A", 1));
+		testPairs.Add(new Tuple<string, int>("B", 1));
+		testPairs.Add(new Tuple<string, int>("C", 2));
+		testPairs.Add(new Tuple<string, int>("D", 3));*/
 
 		if (UseShannonFano)
 		{
