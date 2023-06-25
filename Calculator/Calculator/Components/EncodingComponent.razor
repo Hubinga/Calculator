@@ -54,6 +54,24 @@
 			<h3>Mittlere Codewortlänge: @averageMessageLength bits</h3>
 			<h3>Entropie: @entropy bits</h3>
 		</div>
+		<div class="tree">
+			@{
+				//List<string> lines = new List<string>() { "eins", "zwei drei", "vier fünf sechs sieben", "acht neun zehn elf zwölf dreizehn vierzehn fünfzehn" };
+				for (int i = 0; i < leafes.Count; i++)
+				{
+					string[] lineItems = leafes[i].Trim().Split(" ");
+
+					<div class="box">
+					@for (int j = 0; j < lineItems.Length; j++)
+					{
+						<div class="node">
+							@lineItems[j]
+						</div>
+					}
+					</div>
+				}
+			}
+		</div>
 	}
 }
 
@@ -64,6 +82,8 @@
 	private bool solved = false;
 	private List<Tuple<string, int>> valuePairs = new List<Tuple<string, int>>();
 	private List<EncodingDataModel> encodingResults = new List<EncodingDataModel>();
+
+	private List<string> leafes = new List<string>();
 
 	private Encoding encoding = new();
 	private string inputValuePair = "";
@@ -159,7 +179,8 @@
 		}
 		else
 		{
-			encoding.GenerateHuffman(testPairs);
+			BinaryTree tree = encoding.GenerateHuffman(testPairs);
+			leafes = tree.GetLevelOrder();
 		}
 
 	}

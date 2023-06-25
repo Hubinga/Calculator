@@ -49,31 +49,60 @@ namespace Calculator.Classes
 	{
 		public Node? Root { get; private set; } = null;
 
-		public void PrintLevelOrder()
+		public Tuple<string, string> GetChildren(string value)
+		{
+			return null;
+		}
+
+		public void FillTree()
+		{
+
+		}
+
+		public void FillCurrentLevel()
+		{
+
+		}
+
+		public List<string> GetLevelOrder(bool fillEmptyLeafes = true)
 		{
 			int heigth = CalculateHeight(Root);
+			List<string> leafes = new List<string>();
 
 			for (int i = 1; i <= heigth; i++)
 			{
-				PrintCurrentLevel(Root, i);
+				leafes.Add("");
+				PrintCurrentLevel(Root, i, leafes, fillEmptyLeafes);
                 Console.WriteLine();
             }
+
+			
+			return leafes;
+			
 		}
 
-		private void PrintCurrentLevel(Node root, int level)
+		private void PrintCurrentLevel(Node root, int level, List<string> leafes, bool fillEmptyLeafes = true)
 		{
 			if (root == null) 
 			{
-				return;
+				if (fillEmptyLeafes)
+				{
+					root = new Node("empty");
+				}
+				else
+				{
+					return;
+				}
 			}
 			if (level == 1)
 			{
                 Console.Write(root.Value + " ");
-            }
+				leafes[leafes.Count - 1] += root.Value + " ";
+			}
 			else if (level > 1)
 			{
-				PrintCurrentLevel(root.Left, level - 1);
-				PrintCurrentLevel(root.Right, level - 1);
+				PrintCurrentLevel(root.Left, level - 1, leafes, fillEmptyLeafes);
+				PrintCurrentLevel(root.Right, level - 1, leafes, fillEmptyLeafes);
 			}
 		}
 

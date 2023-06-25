@@ -87,7 +87,7 @@ namespace Calculator.Classes
 			NextSubset(probabilityOfSubset - currentProbability, lastIdxFromSubset + 1, endIdxSubset, false);
 		}
 
-		public void GenerateHuffman(List<Tuple<string, int>> valuePairs)
+		public BinaryTree GenerateHuffman(List<Tuple<string, int>> valuePairs)
 		{
 			encodingDataModels.Clear();
 
@@ -116,10 +116,10 @@ namespace Calculator.Classes
 				tree.Add(value);
 			}
 
-			tree.PrintLevelOrder();
 			//store encodings
 			tree.GetEncodings(encodingDataModels);
-			tree.PrintAllCodes();
+
+			return tree;
         }
 
 		private void NextPair(List<EncodingDataModel> currentData, List<string> treeValues)
